@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuth, useToast } from '../App'
 import { generateWallet, storeWallet, getWallets } from '../lib/crypto'
 
@@ -11,6 +12,7 @@ const CHAINS = [
 export default function WalletsPage() {
   const { user } = useAuth()
   const toast = useToast()
+  const navigate = useNavigate()
   const [wallets, setWallets] = useState([])
   const [agents, setAgents] = useState([])
   const [selectedChain, setSelectedChain] = useState('')
@@ -52,11 +54,8 @@ export default function WalletsPage() {
   const handleSelectWallet = (address) => {
     const next = selectedWallet === address ? null : address
     setSelectedWallet(next)
-    if (next) {
-      localStorage.setItem(`selected_wallet_${user.id}`, next)
-    } else {
-      localStorage.removeItem(`selected_wallet_${user.id}`)
-    }
+    if (next) localStorage.setItem(`selected_wallet_${user.id}`, next)
+    else localStorage.removeItem(`selected_wallet_${user.id}`)
   }
 
   const chainIcon = (chain) => CHAINS.find(c => c.id === chain)?.icon || '🔑'
@@ -72,9 +71,7 @@ export default function WalletsPage() {
           <div className="select-wrap">
             <select className="select" value={selectedChain} onChange={e => setSelectedChain(e.target.value)}>
               <option value="">Select chain...</option>
-              {CHAINS.map(c => (
-                <option key={c.id} value={c.id}>{c.icon}  {c.label} — {c.desc}</option>
-              ))}
+              {CHAINS.map(c => <option key={c.id} value={c.id}>{c.icon}  {c.label} — {c.desc}</option>)}
             </select>
             <span className="select-arrow">▼</span>
           </div>
@@ -86,7 +83,6 @@ export default function WalletsPage() {
 
       <div className="section">
         <div className="section-label">Your Wallets ({wallets.length})</div>
-
         {wallets.length === 0 ? (
           <div className="card">
             <div className="empty-state">
@@ -99,27 +95,18 @@ export default function WalletsPage() {
           wallets.map((wallet, i) => {
             const isSelected = selectedWallet === wallet.address
             const boundAgents = agents.filter(a => a.wallet?.address === wallet.address)
-
             return (
-              <div
-                key={wallet.address || i}
-                className={`list-item ${isSelected ? 'selected' : ''}`}
-                onClick={() => handleSelectWallet(wallet.address)}
-              >
+              <div key={wallet.address || i} className={`list-item ${isSelected ? 'selected' : ''}`} onClick={() => handleSelectWallet(wallet.address)}>
                 <div className="list-item-icon">{chainIcon(wallet.chain)}</div>
                 <div className="list-item-content">
                   <div className="list-item-title">
                     {wallet.chain.toUpperCase()}
                     {isSelected && <span style={{ marginLeft: 6, color: 'var(--status-success)', fontSize: 12 }}>● Active</span>}
                   </div>
-                  <div className="list-item-desc mono" onClick={e => handleCopy(e, wallet.address)}>
-                    {wallet.address.slice(0, 12)}...{wallet.address.slice(-6)}
-                  </div>
+                  <div className="list-item-desc mono" onClick={e => handleCopy(e, wallet.address)}>{wallet.address.slice(0, 12)}...{wallet.address.slice(-6)}</div>
                   {boundAgents.length > 0 && (
                     <div style={{ marginTop: 4, display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-                      {boundAgents.map((a, j) => (
-                        <span key={j} className="badge badge-success">{a.name}</span>
-                      ))}
+                      {boundAgents.map((a, j) => <span key={j} className="badge badge-success badge-dot">{a.name}</span>)}
                     </div>
                   )}
                 </div>
@@ -135,18 +122,12 @@ export default function WalletsPage() {
           <div className="section-label">Bound Agents ({agents.length})</div>
           {agents.map((agent, i) => (
             <div key={i} className="list-item" style={{ cursor: 'default' }}>
-              <div className="list-item-icon" style={{
-                background: agent.bound ? 'rgba(23,178,106,0.1)' : undefined
-              }}>🤖</div>
+              <div className="list-item-icon" style={{ background: agent.bound ? 'rgba(23,178,106,0.1)' : undefined }}>🤖</div>
               <div className="list-item-content">
                 <div className="list-item-title">{agent.name}</div>
-                <div className="list-item-desc">
-                  {agent.chain} · {agent.wallet?.address?.slice(0, 10)}...
-                </div>
+                <div className="list-item-desc">{agent.chain} · {agent.wallet?.address?.slice(0, 10)}...</div>
               </div>
-              <span className={`badge ${agent.bound ? 'badge-success' : 'badge-pending'}`}>
-                {agent.bound ? 'Bound' : 'Pending'}
-              </span>
+              <span className={`badge ${agent.bound ? 'badge-success' : 'badge-pending'}`}>{agent.bound ? 'Bound' : 'Pending'}</span>
             </div>
           ))}
         </div>
