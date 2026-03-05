@@ -2,8 +2,12 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <meta name="theme-color" content="#FFFFFF" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="AgentVault" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
     <title>AgentVault</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,11 +19,15 @@
         background: #FFFFFF;
         color: #0F172A;
         min-height: 100vh;
+        min-height: 100dvh;
+        -webkit-font-smoothing: antialiased;
       }
-      #root { min-height: 100vh; }
+      #root { min-height: 100vh; min-height: 100dvh; }
     </style>
-    <script type="module" crossorigin src="/assets/index-Dr2H6IZu.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-CRtFANp1.css">
+    <script type="module" crossorigin src="/assets/index-CkVwulp4.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/vendor-DEeXsb-x.js">
+    <link rel="modulepreload" crossorigin href="/assets/crypto-Dgv5ngkn.js">
+    <link rel="stylesheet" crossorigin href="/assets/index-DnqoWE1w.css">
   <link rel="manifest" href="/manifest.webmanifest"><script id="vite-plugin-pwa:register-sw" src="/registerSW.js"></script></head>
   <body>
     <div id="root"></div>
