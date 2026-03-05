@@ -1,0 +1,247 @@
+:root {
+  --bg: #1a1a2e;
+  --bg-secondary: #16213e;
+  --accent: #0f3460;
+  --primary: #e94560;
+  --text: #fff;
+  --text-muted: #a0a0a0;
+  --success: #4ade80;
+  --error: #f87171;
+}
+
+.app {
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  font-size: 1.2rem;
+  color: var(--text-muted);
+}
+
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.card {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 16px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin: 4px;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #d63d56;
+}
+
+.btn-secondary {
+  background: var(--accent);
+  color: white;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--primary);
+  color: var(--primary);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 1rem;
+  margin-bottom: 12px;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+h1 { margin-bottom: 8px; }
+h2 { margin-bottom: 16px; }
+p { margin-bottom: 12px; color: var(--text-muted); }
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--accent);
+}
+
+.header h1 { margin: 0; font-size: 1.2rem; }
+
+.nav {
+  display: flex;
+  gap: 8px;
+}
+
+.nav-link {
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+.nav-link:hover, .nav-link.active {
+  background: var(--accent);
+  color: var(--text);
+}
+
+.wallet-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: var(--bg);
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.wallet-info h3 { font-size: 1rem; margin-bottom: 4px; }
+.wallet-address { font-family: monospace; font-size: 0.8rem; color: var(--text-muted); }
+.wallet-balance { color: var(--success); font-weight: 600; }
+
+.agent-card {
+  padding: 16px;
+  background: var(--bg);
+  border-radius: 8px;
+  margin-bottom: 12px;
+  border-left: 4px solid var(--primary);
+}
+
+.agent-card.bound { border-left-color: var(--success); }
+
+.qr-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px;
+}
+
+.qr-scanner {
+  width: 100%;
+  max-width: 300px;
+  aspect-ratio: 1;
+  background: var(--bg);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.tx-details {
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 16px;
+  margin: 16px 0;
+}
+
+.tx-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--accent);
+}
+
+.tx-row:last-child { border-bottom: none; }
+
+.tx-label { color: var(--text-muted); }
+.tx-value { font-family: monospace; }
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.actions .btn { flex: 1; }
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+}
+
+.status.success { background: rgba(74, 222, 128, 0.2); color: var(--success); }
+.status.pending { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
+.status.error { background: rgba(248, 113, 113, 0.2); color: var(--error); }
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+}
+
+.step-number {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.step.done .step-number { background: var(--success); }
+.step.active .step-number { background: var(--primary); }
+
+.chain-select {
+  display: flex;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.chain-btn {
+  flex: 1;
+  padding: 12px;
+  border: 2px solid var(--accent);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  text-align: center;
+}
+
+.chain-btn.selected {
+  border-color: var(--primary);
+  background: var(--accent);
+}
