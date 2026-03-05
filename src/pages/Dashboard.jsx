@@ -12,7 +12,6 @@ export default function Dashboard() {
   useEffect(() => {
     if (user) {
       setWallets(getWallets(user.id))
-      // Load bound agents (from localStorage for now)
       const stored = localStorage.getItem(`agents_${user.id}`)
       setAgents(stored ? JSON.parse(stored) : [])
     }
@@ -36,10 +35,13 @@ export default function Dashboard() {
   return (
     <div>
       <header className="header">
-        <h1>🔐 AgentVault</h1>
+        <h1>
+          <span className="header-logo">A</span>
+          Agent<span style={{ color: 'var(--tyler-red)' }}>Vault</span>
+        </h1>
         <nav className="nav">
           <Link to="/dashboard" className="nav-link active">Wallets</Link>
-          <Link to="/bind" className="nav-link">Bind Agent</Link>
+          <Link to="/bind" className="nav-link">Bind</Link>
           <Link to="/approve" className="nav-link">Approve</Link>
           <button onClick={logout} className="nav-link">Logout</button>
         </nav>
@@ -48,12 +50,13 @@ export default function Dashboard() {
       <div className="container">
         {/* Wallets Section */}
         <section className="card">
-          <h2>💳 Your Wallets</h2>
+          <div className="section-icon">💳</div>
+          <h2>Your Wallets</h2>
           <p>Generate wallets locally. Keys never leave your device.</p>
 
           {wallets.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '20px' }}>
-              <p>No wallets yet</p>
+            <div style={{ textAlign: 'center', padding: '24px', background: 'var(--surface-dim)', borderRadius: 'var(--corner-list-item)' }}>
+              <p style={{ margin: 0, color: 'var(--text-secondary)' }}>No wallets yet — generate one below</p>
             </div>
           ) : (
             wallets.map((wallet, i) => (
@@ -76,8 +79,8 @@ export default function Dashboard() {
             ))
           )}
 
-          <div style={{ marginTop: '16px' }}>
-            <p style={{ fontSize: '0.9rem' }}>Generate new wallet:</p>
+          <div style={{ marginTop: '20px' }}>
+            <p style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '12px' }}>Generate new wallet:</p>
             <div className="chain-select">
               <button 
                 className="chain-btn" 
@@ -106,12 +109,13 @@ export default function Dashboard() {
 
         {/* Agents Section */}
         <section className="card">
-          <h2>🤖 Bound Agents</h2>
+          <div className="section-icon">🤖</div>
+          <h2>Bound Agents</h2>
           <p>Agents connected to your wallets</p>
 
           {agents.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '20px' }}>
-              <p>No agents bound yet</p>
+            <div style={{ textAlign: 'center', padding: '24px', background: 'var(--surface-dim)', borderRadius: 'var(--corner-list-item)' }}>
+              <p style={{ margin: '0 0 16px', color: 'var(--text-secondary)' }}>No agents bound yet</p>
               <Link to="/bind" className="btn btn-primary">
                 Bind Agent
               </Link>
@@ -121,15 +125,15 @@ export default function Dashboard() {
               <div key={i} className={`agent-card ${agent.bound ? 'bound' : ''}`}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div>
-                    <h3>{agent.name}</h3>
-                    <p style={{ margin: 0 }}>Chain: {agent.chain}</p>
+                    <h3 style={{ fontFamily: "'Poppins', sans-serif" }}>{agent.name}</h3>
+                    <p style={{ margin: 0, fontSize: '13px' }}>Chain: {agent.chain}</p>
                   </div>
                   <span className={`status ${agent.bound ? 'success' : 'pending'}`}>
                     {agent.bound ? 'Bound' : 'Pending'}
                   </span>
                 </div>
                 {agent.wallet && (
-                  <div style={{ marginTop: '8px', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                  <div style={{ marginTop: '8px', fontFamily: "'Fira Code', monospace", fontSize: '12px', color: 'var(--text-secondary)' }}>
                     Wallet: {agent.wallet.address.slice(0, 12)}...
                   </div>
                 )}
@@ -140,12 +144,13 @@ export default function Dashboard() {
 
         {/* Mode Settings */}
         <section className="card">
-          <h2>⚙️ Approval Modes</h2>
+          <div className="section-icon">⚙️</div>
+          <h2>Approval Modes</h2>
           
           <div className="step">
             <div className="step-number">A</div>
             <div>
-              <h3>Mode A - Per-Transaction</h3>
+              <h3>Per-Transaction</h3>
               <p>Approve each transaction with passkey</p>
             </div>
           </div>
@@ -153,7 +158,7 @@ export default function Dashboard() {
           <div className="step">
             <div className="step-number">B</div>
             <div>
-              <h3>Mode B - Auto-Sign</h3>
+              <h3>Auto-Sign</h3>
               <p>Pre-authorized grants within limits</p>
             </div>
           </div>

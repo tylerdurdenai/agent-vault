@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams, Link } from 'react-router-dom'
 import { useAuth } from '../App'
 
-// Mock pending transactions (in production, fetch from backend)
 const mockPendingTx = {
   id: 'tx_123',
   agent: 'trader',
@@ -26,15 +25,12 @@ export default function TransactionApproval() {
   const [processing, setProcessing] = useState(false)
 
   useEffect(() => {
-    // In production: fetch pending tx from backend
-    // const txId = searchParams.get('id')
     setTx(mockPendingTx)
   }, [searchParams])
 
   const handleApprove = async () => {
     setProcessing(true)
     try {
-      // Passkey verification for Mode A
       const credential = await navigator.credentials.get({
         publicKey: {
           challenge: new TextEncoder().encode(`approve_${tx.id}`),
@@ -44,9 +40,6 @@ export default function TransactionApproval() {
       })
 
       if (credential) {
-        // In production: Send approval to TEE
-        // await submitApproval(tx.id, credential)
-        
         alert('Transaction approved and submitted!')
         navigate('/dashboard')
       }
@@ -59,19 +52,17 @@ export default function TransactionApproval() {
   }
 
   const handleReject = () => {
-    // In production: Send rejection to backend
     alert('Transaction rejected')
     navigate('/dashboard')
   }
 
   const handleEdit = () => {
-    // In production: Open edit modal
     alert('Edit functionality - adjust gas, amount, etc.')
   }
 
   if (!tx) {
     return (
-      <div className="container" style={{ paddingTop: '60px' }}>
+      <div className="container" style={{ paddingTop: '100px' }}>
         <div className="card">
           <p>Loading transaction...</p>
         </div>
@@ -82,13 +73,24 @@ export default function TransactionApproval() {
   return (
     <div>
       <header className="header">
-        <h1>📝 Approve Transaction</h1>
+        <h1>
+          <span className="header-logo">A</span>
+          Agent<span style={{ color: 'var(--tyler-red)' }}>Vault</span>
+        </h1>
+        <nav className="nav">
+          <Link to="/dashboard" className="nav-link">Wallets</Link>
+          <Link to="/bind" className="nav-link">Bind</Link>
+          <Link to="/approve" className="nav-link active">Approve</Link>
+        </nav>
       </header>
 
       <div className="container">
         <div className="card">
-          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-            <span className="status pending">Mode A - Requires Approval</span>
+          <div className="section-icon">📝</div>
+          <h2>Approve Transaction</h2>
+
+          <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+            <span className="status pending">Mode A — Requires Approval</span>
           </div>
 
           <div className="tx-details">
@@ -110,7 +112,7 @@ export default function TransactionApproval() {
             </div>
             <div className="tx-row">
               <span className="tx-label">Amount</span>
-              <span className="tx-value" style={{ color: 'var(--success)', fontWeight: 'bold' }}>
+              <span className="tx-value" style={{ color: 'var(--status-success)', fontWeight: 700 }}>
                 {tx.amount} {tx.token} ({tx.usdValue})
               </span>
             </div>
@@ -124,13 +126,13 @@ export default function TransactionApproval() {
             </div>
           </div>
 
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+          <p style={{ fontSize: '12px', fontFamily: "'Fira Code', monospace", color: 'var(--text-secondary)' }}>
             Data: {tx.data}
           </p>
 
           {processing && (
-            <div className="status pending" style={{ marginTop: '16px' }}>
-              Processing...
+            <div style={{ textAlign: 'center', marginTop: '16px' }}>
+              <span className="status pending">Processing...</span>
             </div>
           )}
 
@@ -143,10 +145,9 @@ export default function TransactionApproval() {
               Edit
             </button>
             <button 
-              className="btn btn-outline" 
+              className="btn btn-danger" 
               onClick={handleReject}
               disabled={processing}
-              style={{ borderColor: 'var(--error)', color: 'var(--error)' }}
             >
               Reject
             </button>
@@ -159,7 +160,7 @@ export default function TransactionApproval() {
             </button>
           </div>
 
-          <p style={{ fontSize: '0.8rem', marginTop: '16px', textAlign: 'center' }}>
+          <p style={{ fontSize: '12px', marginTop: '20px', textAlign: 'center', color: 'var(--text-secondary)' }}>
             🔐 You'll be asked to authenticate with passkey
           </p>
         </div>

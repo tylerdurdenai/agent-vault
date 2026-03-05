@@ -13,8 +13,8 @@ export default defineConfig({
         name: 'AgentVault',
         short_name: 'AgentVault',
         description: 'Secure crypto agent management',
-        theme_color: '#1a1a2e',
-        background_color: '#1a1a2e',
+        theme_color: '#FFFFFF',
+        background_color: '#FFFFFF',
         display: 'standalone',
         icons: [
           {

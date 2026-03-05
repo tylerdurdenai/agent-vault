@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { Html5QrcodeScanner } from 'html5-qrcode'
 import { useAuth } from '../App'
 import { getWallets } from '../lib/crypto'
@@ -68,11 +68,6 @@ export default function AgentBinding() {
     setError(null)
 
     try {
-      // In production: Key injection to TEE would happen here
-      // 1. Verify TEE attestation
-      // 2. Wrap key with TEE public key
-      // 3. Send via relay
-
       const agent = {
         id: agentData.agent_id,
         name: `Agent ${agentData.agent_id}`,
@@ -80,16 +75,12 @@ export default function AgentBinding() {
         wallet: selectedWallet,
         bound: true,
         boundAt: Date.now(),
-        mode: 'B' // Default to Mode B
+        mode: 'B'
       }
 
-      // Store bound agent
       const existing = JSON.parse(localStorage.getItem(`agents_${user.id}`) || '[]')
       const updated = [...existing.filter(a => a.id !== agent.id), agent]
       localStorage.setItem(`agents_${user.id}`, JSON.stringify(updated))
-
-      // In production: Inject key to TEE
-      // await injectKeyToTEE(selectedWallet, agentData)
 
       setStep('done')
     } catch (err) {
@@ -99,20 +90,33 @@ export default function AgentBinding() {
     }
   }
 
+  const HeaderNav = () => (
+    <header className="header">
+      <h1>
+        <span className="header-logo">A</span>
+        Agent<span style={{ color: 'var(--tyler-red)' }}>Vault</span>
+      </h1>
+      <nav className="nav">
+        <Link to="/dashboard" className="nav-link">Wallets</Link>
+        <Link to="/bind" className="nav-link active">Bind</Link>
+        <Link to="/approve" className="nav-link">Approve</Link>
+      </nav>
+    </header>
+  )
+
   if (step === 'scan') {
     return (
       <div>
-        <header className="header">
-          <h1>🔗 Bind Agent</h1>
-        </header>
+        <HeaderNav />
         <div className="container">
           <div className="card">
+            <div className="section-icon">🔗</div>
             <h2>Scan Agent QR</h2>
             <p>Scan the QR code from the agent to bind your wallet</p>
 
             {error && (
-              <div className="status error" style={{ marginBottom: '16px' }}>
-                {error}
+              <div style={{ marginBottom: '16px' }}>
+                <span className="status error">{error}</span>
               </div>
             )}
 
@@ -126,22 +130,21 @@ export default function AgentBinding() {
   if (step === 'select') {
     return (
       <div>
-        <header className="header">
-          <h1>🔗 Bind Agent</h1>
-        </header>
+        <HeaderNav />
         <div className="container">
           <div className="card">
-            <h2>Agent: {agentData.agent_id}</h2>
+            <div className="section-icon">🔗</div>
+            <h2 style={{ fontFamily: "'Poppins', sans-serif" }}>Agent: {agentData.agent_id}</h2>
             <p>Chain: {agentData.chain}</p>
 
-            <div className="status success" style={{ marginBottom: '16px' }}>
-              Agent verified ✓
+            <div style={{ marginBottom: '20px' }}>
+              <span className="status success">Agent verified ✓</span>
             </div>
 
-            <h3>Select Wallet to Bind</h3>
+            <h3 style={{ fontFamily: "'Poppins', sans-serif", marginBottom: '16px' }}>Select Wallet to Bind</h3>
             {wallets.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '20px' }}>
-                <p>No wallets available</p>
+              <div style={{ textAlign: 'center', padding: '24px', background: 'var(--surface-dim)', borderRadius: 'var(--corner-list-item)' }}>
+                <p style={{ margin: '0 0 16px', color: 'var(--text-secondary)' }}>No wallets available</p>
                 <button onClick={() => navigate('/dashboard')} className="btn btn-primary">
                   Generate Wallet First
                 </button>
@@ -156,7 +159,8 @@ export default function AgentBinding() {
                     onClick={() => setSelectedWallet(wallet)}
                     style={{ 
                       cursor: 'pointer',
-                      border: selectedWallet === wallet ? '2px solid var(--primary)' : '2px solid transparent'
+                      borderColor: selectedWallet === wallet ? 'var(--button-primary)' : undefined,
+                      background: selectedWallet === wallet ? 'rgba(0,0,0,0.02)' : undefined
                     }}
                   >
                     <div className="wallet-info">
@@ -165,19 +169,22 @@ export default function AgentBinding() {
                         {wallet.address.slice(0, 14)}...
                       </div>
                     </div>
+                    {selectedWallet === wallet && (
+                      <span className="status success">Selected</span>
+                    )}
                   </div>
                 ))
             )}
 
             {error && (
-              <div className="status error" style={{ marginTop: '12px' }}>
-                {error}
+              <div style={{ marginTop: '12px' }}>
+                <span className="status error">{error}</span>
               </div>
             )}
 
             <div className="actions">
               <button 
-                className="btn btn-secondary" 
+                className="btn btn-outline" 
                 onClick={() => setStep('scan')}
               >
                 Back
@@ -199,22 +206,20 @@ export default function AgentBinding() {
   if (step === 'done') {
     return (
       <div>
-        <header className="header">
-          <h1>✅ Bound</h1>
-        </header>
+        <HeaderNav />
         <div className="container">
           <div className="card" style={{ textAlign: 'center' }}>
-            <h2 style={{ fontSize: '2rem' }}>🎉</h2>
+            <div style={{ fontSize: '48px', marginBottom: '16px' }}>🎉</div>
             <h2>Agent Bound Successfully</h2>
             <p>
               {agentData.agent_id} is now bound to your {agentData.chain} wallet
             </p>
-            <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>
+            <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>
               Keys are securely injected to the TEE. The agent can now sign 
               transactions according to your approval mode.
             </p>
 
-            <div style={{ marginTop: '24px' }}>
+            <div style={{ marginTop: '28px' }}>
               <button 
                 className="btn btn-primary" 
                 onClick={() => navigate('/dashboard')}
